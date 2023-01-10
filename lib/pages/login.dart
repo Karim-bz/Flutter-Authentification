@@ -3,13 +3,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_authentification/components/square_tile.dart';
+import 'package:flutter_authentification/services/auth_service.dart';
 
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 
 class Login extends StatefulWidget {
   final Function()? onTap;
-  const Login({super.key,required this.onTap});
+  const Login({super.key, required this.onTap});
 
   @override
   State<Login> createState() => _LoginState();
@@ -123,7 +124,10 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: 25),
                 //SignIn Button
-                MyButton(onTap: signUserIn, title: 'Sign In',),
+                MyButton(
+                  onTap: signUserIn,
+                  title: 'Sign In',
+                ),
                 SizedBox(height: 40),
                 //or continue with
                 Padding(
@@ -160,9 +164,15 @@ class _LoginState extends State<Login> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SquareTile(imagePath: 'lib/images/google.png'),
+                    SquareTile(
+                      onTap: () => AuthService().signInWithGoogle(),
+                      imagePath: 'lib/images/google.png',
+                    ),
                     SizedBox(width: 25),
-                    SquareTile(imagePath: 'lib/images/apple.png'),
+                    SquareTile(
+                      onTap: () {},
+                      imagePath: 'lib/images/apple.png',
+                    ),
                   ],
                 ),
                 SizedBox(height: 40),
