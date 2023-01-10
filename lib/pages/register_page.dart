@@ -7,21 +7,22 @@ import 'package:flutter_authentification/components/square_tile.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 
-class Login extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  const Login({super.key,required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterPageState extends State<RegisterPage> {
   // text Editing Controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPassController = TextEditingController();
 
-  // SignIn
-  void signUserIn() async {
+  // Sign User Up
+  void signUserUp() async {
     //show loading circle
     showDialog(
       context: context,
@@ -31,30 +32,25 @@ class _LoginState extends State<Login> {
         );
       }),
     );
-    //Sign User IN
+    //try Creating new User
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
+      if (passwordController.text == confirmPassController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+      }else{
+        // Mismatch password error message
+        errorMessage('Password don\'t Match!');
+      }
 
       // pop the loading circle
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       // pop the loading circle
       Navigator.pop(context);
-
-      // Wrong Email
-      if (e.code == 'user-not-found') {
-        // Show error to User
-        errorMessage('Incorrect Email');
-      }
-
-      //Wrong Password
-      else if (e.code == 'wrong-password') {
-        // Show error to User
-        errorMessage('Incorrect Password');
-      }
+      // show error message
+      errorMessage(e.code);
     }
   }
 
@@ -81,16 +77,16 @@ class _LoginState extends State<Login> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 50),
+                SizedBox(height: 30),
                 //logo
                 Icon(
                   Icons.lock,
-                  size: 100,
+                  size: 70,
                 ),
-                SizedBox(height: 40),
-                //Welcome back, you've been missed!
+                SizedBox(height: 30),
+                //Let\'s Crate an account for you
                 Text(
-                  'Welcome back, you\'ve been missed!',
+                  'Let\'s Crate an account for you',
                   style: TextStyle(color: Colors.grey[700], fontSize: 16),
                 ),
                 SizedBox(height: 25),
@@ -105,6 +101,13 @@ class _LoginState extends State<Login> {
                 MyTextField(
                   controller: passwordController,
                   hintText: 'Password',
+                  obscureText: true,
+                ),
+                SizedBox(height: 10),
+                //password Confirmation textfield
+                MyTextField(
+                  controller: confirmPassController,
+                  hintText: 'Confirm Password',
                   obscureText: true,
                 ),
                 SizedBox(height: 10),
@@ -123,8 +126,11 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: 25),
                 //SignIn Button
-                MyButton(onTap: signUserIn, title: 'Sign In',),
-                SizedBox(height: 40),
+                MyButton(
+                  onTap: signUserUp,
+                  title: 'Sign Up',
+                ),
+                SizedBox(height: 30),
                 //or continue with
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 25),
@@ -155,7 +161,7 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 20),
                 //google + apple sign in buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -165,20 +171,20 @@ class _LoginState extends State<Login> {
                     SquareTile(imagePath: 'lib/images/apple.png'),
                   ],
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 20),
                 //not a member register now
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Not a member!',
+                      'Already have an account?',
                       style: TextStyle(color: Colors.grey[700]),
                     ),
                     SizedBox(width: 4),
                     GestureDetector(
                       onTap: widget.onTap,
                       child: Text(
-                        'Register Now',
+                        'Login Now',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,
