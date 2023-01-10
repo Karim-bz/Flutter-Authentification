@@ -39,44 +39,31 @@ class _LoginState extends State<Login> {
 
       // pop the loading circle
       Navigator.pop(context);
-
     } on FirebaseAuthException catch (e) {
       // pop the loading circle
       Navigator.pop(context);
-      
+
       // Wrong Email
       if (e.code == 'user-not-found') {
         // Show error to User
-        wrongEmailMessage();
+        errorMessage('Incorrect Email');
       }
 
       //Wrong Password
       else if (e.code == 'wrong-password') {
         // Show error to User
-        wrongPasswordMessage();
+        errorMessage('Incorrect Password');
       }
     }
   }
 
-  // wrong Email Message popup
-  void wrongEmailMessage() {
+  // error Message popup
+  void errorMessage(message) {
     showDialog(
       context: context,
       builder: ((context) {
         return AlertDialog(
-          title: Text('Incorrect EMAIL!'),
-        );
-      }),
-    );
-  }
-
-  // wrong Password Message popup
-  void wrongPasswordMessage() {
-    showDialog(
-      context: context,
-      builder: ((context) {
-        return AlertDialog(
-          title: Text('Incorrect Password!'),
+          title: Text(message),
         );
       }),
     );
